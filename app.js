@@ -14,8 +14,8 @@ const HealthRoutes = require('./src/routes/health.routes')
 const AdminRoutes = require('./src/routes/admin.routes')
 const PublicRoutes = require('./src/routes/public.routes')
 const AgentRoutes = require('./src/routes/agent.routes')
-const regionRouter = require('./src/routes/region.routes')
-
+const RegionRoutes = require('./src/routes/region.routes')
+const ContactRoutes = require('./src/routes/contact_routes')
 
 app.use(Express.static('./src/public')) //serves our static genesis project
 app.use(Express.json())
@@ -28,13 +28,13 @@ setActive(process.env)
 const { initLogger } = require('./src/utils/logger')
 initLogger(app, process.env)
 
-MiddleWare.registerBaseMiddleWare(app)
+// MiddleWare.registerBaseMiddleWare(app)
 HealthRoutes.registerHealthRoutes(app)
 AdminRoutes.registerAdminRoutes(app)
 PublicRoutes.registerPublicRoutes(app)
 AgentRoutes.registerAgentRoutes(app)
-regionRouter.registerRegionRoutes(app)
-
+RegionRoutes.registerRegionRoutes(app)
+ContactRoutes.registerContactRoutes(app)
 
 MongoManager.openMongoConnection(process.env.MONGO_URI)
 app.listen(port, () => {
