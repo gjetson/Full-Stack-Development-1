@@ -1,7 +1,7 @@
 {
-  "name": "Rocket-Genesis-Api",
+  "name": "rocket-genesis-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Week 6 - Full Stack Development",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
@@ -22,5 +22,16 @@
     "chai-http": "^4.3.0",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.20"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gjetson/Full-Stack-Development-1.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gjetson/Full-Stack-Development-1/issues"
+  },
+  "homepage": "https://github.com/gjetson/Full-Stack-Development-1#readme"
 }
