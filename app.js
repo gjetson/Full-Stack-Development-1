@@ -20,6 +20,13 @@ const regionRouter = require('./src/routes/region.routes')
 app.use(Express.static('./src/public')) //serves our static genesis project
 app.use(Express.json())
 
+// configurable authorization
+const { setActive } = require('./src/utils/auth')
+setActive(process.env)
+
+// configurable logger
+const { initLogger } = require('./src/utils/logger')
+initLogger(app, process.env)
 
 MiddleWare.registerBaseMiddleWare(app)
 HealthRoutes.registerHealthRoutes(app)
