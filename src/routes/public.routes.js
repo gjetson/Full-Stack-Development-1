@@ -1,9 +1,11 @@
-const PublicController = require('../features/public/public.controller');
+const PublicController = require('../features/public/public.controller')
 
 const registerPublicRoutes = (app) => {
-  app.post('/contact', PublicController.contactUs);
+  //app.post('/contact', PublicController.contactUs);
 
-  app.get('/calc-residential', PublicController.calculateResidentialQuote);
+  app.get('/calc-residential', PublicController.calculateResidentialQuote)
+
+  app.get('/calc/:type', PublicController.calculateQuote)
 }
 
-module.exports = {registerPublicRoutes};
+module.exports = { registerPublicRoutes }
