@@ -1,11 +1,15 @@
 
 const Express = require('express')
+const bodyParser = require('body-parser')
 
 require('dotenv').config()
 //console.log(process.env)
 
 const app = Express()
 const port = process.env.PORT || 3004
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
 
 
 const MongoManager = require('./src/shared/db/mongodb/mongo-manager')

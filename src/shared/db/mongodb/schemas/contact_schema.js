@@ -28,6 +28,10 @@ const ContactSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
+    project_desc: {
+        type: String,
+        trim: true
+    },
     department: {
         type: String,
         trim: true
@@ -41,8 +45,6 @@ const ContactSchema = new mongoose.Schema({
         trim: true
     }
 }, { timestamps: true })
-
-
 
 
 module.exports = mongoose.model('Contact', ContactSchema)
