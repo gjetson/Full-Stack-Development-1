@@ -21,7 +21,7 @@ const calculateQuote = (req, res) => {
       res.send(`Error: invalid type. Must be 'residential', 'commercial' or 'industrial'`)
       return
     }
-    if (type === 'redidential') {
+    if (type === 'residential') {
       calculateResidentialQuote(req, res)
     } else if (type === 'commercial') {
       calculateCommercialQuote(req, res)
@@ -36,21 +36,16 @@ const calculateQuote = (req, res) => {
 
 const calculateIndustrialQuote = (req, res) => {
   try {
-    const elevs = req.query.elevs
     const tier = req.query.tier.toLowerCase()
-
-    // validate request object
     if (!Object.keys(Data.unitPrices).includes(tier)) {
       res.status(400)
       return res.send(`Error: invalid tier. Must be 'standard', 'premium' or 'excelium'`)
     }
-    if (!parseInt(elevs)) {
+
+    const elevs = parseInt(req.query.elevs)
+    if (!elevs || (elevs < 1)) {
       res.status(400)
-      return res.send(`Error: 'elevs' query param must be an integer.`)
-    }
-    if (elevs < 1) {
-      res.status(400)
-      return res.send(`'elevs' query param must be greater than zero`)
+      return res.send(`Error: 'elevs' query param must be an integer greater than zero. elevs = ${elevs}`)
     }
 
     const totalCost = calcInstallFee(elevs, tier)
@@ -67,85 +62,73 @@ const calculateIndustrialQuote = (req, res) => {
 }
 
 const calculateResidentialQuote = (req, res) => {
+  try {
+    const tier = req.query.tier.toLowerCase()
+    if (!Object.keys(Data.unitPrices).includes(tier)) {
+      res.status(400)
+      return res.send(`Error: invalid tier. Must be 'standard', 'premium' or 'excelium'. tier = ${tier}`)
+    }
 
-  // define constants
-  const apts = +req.query.apts
-  const floors = +req.query.floors
-  const tier = req.query.tier.toLowerCase()
+    const floors = parseInt(req.query.floors)
+    if (!floors || floors < 1) {
+      res.status(400)
+      return res.send(`Error: 'floors' query param must be an integer greater than zero. floors = ${floors}`)
+    }
 
-  // validate request object
-  if (!Object.keys(Data.unitPrices).includes(tier)) {
-    res.status(400)
-    return res.send(`Error: invalid tier. Must be 'standard', 'premium' or 'excelium'`)
+    const apts = parseInt(req.query.apts)
+    if (!apts || apts < 1) {
+      res.status(400)
+      return res.send(`Error: 'apts' query param must be an integer greater than zero. apts = ${apts}`)
+    }
+
+    // business logic
+    const numElevators = calcResidentialElev(floors, apts)
+    const totalCost = calcInstallFee(numElevators, tier)
+
+    // format response
+    res.send({
+      elevators_required: numElevators,
+      cost: totalCost
+    })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: `${err.message}` })
   }
-
-  if (isNaN(floors) || isNaN(apts)) {
-    res.status(400)
-    return res.send(`Error: apts and floors must be specified as numbers`)
-  }
-
-  if (!Number.isInteger(floors) || !Number.isInteger(apts)) {
-    res.status(400)
-    return res.send(`Error: apts and floors must be integers`)
-  }
-
-  if (floors < 1 || apts < 1) {
-    res.status(400)
-    return res.send(`apts and floors must be greater than zero`)
-  }
-
-  // business logic
-  const numElevators = calcResidentialElev(floors, apts)
-  const totalCost = calcInstallFee(numElevators, tier)
-
-  // format response
-  res.send({
-    elevators_required: numElevators,
-    cost: totalCost
-  })
 }
 
 const calculateCommercialQuote = (req, res) => {
+  try {
+    const tier = req.query.tier.toLowerCase()
+    if (!Object.keys(Data.unitPrices).includes(tier)) {
+      res.status(400)
+      return res.send(`Error: invalid tier. Must be 'standard', 'premium' or 'excelium'. tier = ${tier}`)
+    }
 
-  // define constants
-  const apts = +req.query.apts
-  const floors = +req.query.floors
-  const tier = req.query.tier.toLowerCase()
+    const floors = parseInt(req.query.floors)
+    if (!floors || floors < 1) {
+      res.status(400)
+      return res.send(`Error: 'floors' query param must be an integer greater than zero. floors = ${floors}`)
+    }
 
-  // validate request object
-  if (!Object.keys(Data.unitPrices).includes(tier)) {
-    res.status(400)
-    res.send(`Error: invalid tier`)
-    return
+    const max_occ = parseInt(req.query.max_occ)
+    if (!max_occ || max_occ < 1) {
+      res.status(400)
+      return res.send(`Error: 'max_occ' query param must be an integer greater than zero. max_occ = ${max_occ}`)
+    }
+
+    // business logic
+    const numElevators = calcCommercialElev(floors, max_occ)
+    const totalCost = calcInstallFee(numElevators, tier)
+
+    // format response
+    res.send({
+      elevators_required: numElevators,
+      cost: totalCost
+    })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: `${err.message}` })
   }
-
-  if (isNaN(floors) || isNaN(apts)) {
-    res.status(400)
-    res.send(`Error: apts and floors must be specified as numbers`)
-    return
-  }
-
-  if (!Number.isInteger(floors) || !Number.isInteger(apts)) {
-    res.status(400)
-    res.send(`Error: apts and floors must be integers`)
-    return
-  }
-
-  if (floors < 1 || apts < 1) {
-    res.status(400)
-    res.send(`apts and floors must be greater than zero`)
-    return
-  }
-
-  // business logic
-  const numElevators = calcCommercialElev(floors, apts)
-  const totalCost = calcInstallFee(numElevators, tier)
-
-  // format response
-  res.send({
-    elevators_required: numElevators,
-    cost: totalCost
-  })
 }
 
 const calcResidentialElev = (numFloors, numApts) => {
