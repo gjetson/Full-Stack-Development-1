@@ -1,7 +1,7 @@
 const chai = require('chai')
 const sinon = require('sinon')
-const HealthController = require('../src/features/health/health.controller')
-const ResponseUtil = require('../src/shared/utils/response-util').ResponseUtil
+const HealthController = require('../../../src/features/health/health.controller')
+const ResponseUtil = require('../../../src/shared/utils/response-util').ResponseUtil
 
 describe('HealthController', () => {
   afterEach(() => {

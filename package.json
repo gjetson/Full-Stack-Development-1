@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon ./app.js -e html,js,json,env",
-    "test": "mocha"
+    "test": "mocha --recursive"
   },
   "keywords": [],
   "author": "",
