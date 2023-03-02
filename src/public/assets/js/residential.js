@@ -1,5 +1,9 @@
 //const axios = require('axios')
-const URL = 'http://localhost:3004/agents'
+const AGENTS_URL = 'http://localhost:3004/agents'
+const AGENTS_N_URL = `http://localhost:3004/agents-by-region?region=north`
+const AGENTS_S_URL = `http://localhost:3004/agents-by-region?region=south`
+const AGENTS_E_URL = `http://localhost:3004/agents-by-region?region=east`
+const AGENTS_W_URL = `http://localhost:3004/agents-by-region?region=west`
 
 const currFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -42,7 +46,26 @@ const formatTableRow = (first, last, rtng, fee) => {
     return row
 }
 
-const formatData = async () => {
+const formatData = async (url) => {
+    try {
+        // console.log('URL:', url)
+        const res = await fetch(url)
+        const data = await res.json()
+        // console.log(data)
+        const frag = document.createDocumentFragment()
+        data.agents.forEach((e) => {
+            // console.log(e)
+            frag.appendChild(formatTableRow(e.first_name, e.last_name, e.rating, e.fee))
+        })
+        const el = document.getElementById('agent-table-body')
+        clearData(el)
+        el.appendChild(frag)
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+const formatDataByRegion = async (region) => {
     try {
         const res = await fetch(URL)
         const data = await res.json()
@@ -52,14 +75,21 @@ const formatData = async () => {
             // console.log(e)
             frag.appendChild(formatTableRow(e.first_name, e.last_name, e.rating, e.fee))
         })
-        const div = document.getElementById('agent-table-body')
-        div.appendChild(frag)
+        const el = document.getElementById('agent-table-body')
+        clearData(el)
+        el.appendChild(frag)
     } catch (err) {
         console.error(err)
     }
 }
 
-formatData()
+formatData(AGENTS_URL)
+
+const clearData = (el) => {
+    while (el.firstChild) {
+        el.removeChild(el.firstChild)
+    }
+}
 
 const sortAlpha = (col) => {
     sort(col, false)

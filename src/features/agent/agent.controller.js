@@ -14,12 +14,13 @@ const getAllAgents = asyncWrapper(async (req, res) => {
 
 const getAgentsByRegion = asyncWrapper(async (req, res) => {
   const regionSelected = req.query.region
+  // console.log('region:', regionSelected)
   const agents = await Agent.find({ region: regionSelected.toLowerCase() })
-  if (agents.length === 0) {
-    res.status(404).json({ msg: `No agents found in ${regionSelected}` })
-    return
-  }
-  res.status(200).json({ agents })
+  // if (agents.length === 0) {
+  //   res.status(404).json({ msg: `No agents found in ${regionSelected}` })
+  //   return
+  // }
+  res.status(200).json({ agents, msg: `No agents found in ${regionSelected}` })
 })
 
 const updateAgentInfo = asyncWrapper(async (req, res) => {
