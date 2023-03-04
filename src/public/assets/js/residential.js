@@ -65,24 +65,6 @@ const formatData = async (url) => {
     }
 }
 
-const formatDataByRegion = async (region) => {
-    try {
-        const res = await fetch(URL)
-        const data = await res.json()
-        // console.log(data.agents)
-        const frag = document.createDocumentFragment()
-        data.agents.forEach((e) => {
-            // console.log(e)
-            frag.appendChild(formatTableRow(e.first_name, e.last_name, e.rating, e.fee))
-        })
-        const el = document.getElementById('agent-table-body')
-        clearData(el)
-        el.appendChild(frag)
-    } catch (err) {
-        console.error(err)
-    }
-}
-
 formatData(AGENTS_URL)
 
 const clearData = (el) => {

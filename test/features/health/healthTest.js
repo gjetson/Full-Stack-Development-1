@@ -8,14 +8,30 @@ describe('HealthController', () => {
     sinon.restore()
   })
 
-  describe('#helloWorld()', () => {
-    it('respond with Hello World', (done) => {
+  describe('helloWorld()', () => {
+    it('respond with Hello World', () => {
       sinon.stub(ResponseUtil, 'respondOk').callsFake((res, data, message) => {
         chai.assert.equal(message, 'Hello World')
-        done()
       })
-
       void HealthController.helloWorld()
+    })
+  })
+
+  describe('status()', () => {
+    it('respond with status', () => {
+      sinon.stub(ResponseUtil, 'respondOk').callsFake((res, data, message) => {
+        chai.assert.equal(message, 'Status')
+      })
+      void HealthController.status()
+    })
+  })
+
+  describe('error()', () => {
+    it('respond with error', () => {
+      sinon.stub(ResponseUtil, 'respondOk').callsFake((res, data, message) => {
+        chai.assert.equal(message, 'error')
+      })
+      void HealthController.error()
     })
   })
 })
